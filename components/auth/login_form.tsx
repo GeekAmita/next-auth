@@ -43,12 +43,18 @@ export const LoginForm = () => {
         setError("");
         setSuccess("");
 
-        startTransition(() => {
-            login(values)
-                .then((data) => {
-                    setError(data?.error);
-                    setSuccess(data?.success);
-                });
+        startTransition(async () => {
+            // login(values)
+            //     .then((data) => {
+            //         setError(data?.error);
+            //         setSuccess(data?.success);
+            //     });
+            const response = await login(values);
+
+            if (response?.error) {
+                setError(response?.error);
+            }
+            setSuccess(response?.success);  
         });
     }
 
