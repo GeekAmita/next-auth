@@ -1,7 +1,7 @@
-import NextAuth, { type DefaultSession } from "next-auth"
-import authConfig from "@/auth.config"
+import NextAuth, { type DefaultSession } from "next-auth";
+import authConfig from "@/auth.config";
 
-import { PrismaAdapter } from "@auth/prisma-adapter"
+import { PrismaAdapter } from "@auth/prisma-adapter";
 import { db } from "@/lib/db";
 import { getUserById } from "@/data/user";
 import { UserRole } from "@prisma/client";
@@ -9,11 +9,11 @@ import { UserRole } from "@prisma/client";
 declare module "next-auth" {
   interface Session {
     user: {
-      role: UserRole
-    } & DefaultSession["user"]
+      role: UserRole;
+    } & DefaultSession["user"];
   }
 }
- 
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
   pages: {
     signIn: "/auth/login",
@@ -24,11 +24,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       await db.user.update({
         where: { id: user.id },
         data: { emailVerified: new Date() },
-      })
-    }
+      });
+    },
   },
   callbacks: {
-    async signIn({user, account}) {
+    async signIn({ user, account }) {
       if (account?.provider !== "credentials") {
         return true;
       }
@@ -40,7 +40,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       }
 
       // TODO: Add 2FA check
-      
+
       return true;
     },
     async session({ token, session }) {
@@ -51,10 +51,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (token.role && session.user) {
         session.user.role = token.role;
       }
-      
+
       return session;
     },
-    async jwt({ token}) {
+    async jwt({ token }) {
       if (!token.sub) {
         return token;
       }
@@ -68,9 +68,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       token.role = existingUser.role;
 
       return token;
-    }
+    },
   },
   adapter: PrismaAdapter(db),
   session: { strategy: "jwt" },
   ...authConfig,
-})
+});
