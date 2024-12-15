@@ -1,5 +1,4 @@
 import { auth, signOut } from "@/auth";
-import Counter from "@/components/counter";
 
 const SettingsPage = async () => {
   const session = await auth();
@@ -16,7 +15,6 @@ const SettingsPage = async () => {
       >
         <button type="submit">Sign Out</button>
       </form>
-      <Counter />
     </div>
   );
 };
